@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yuvraj Singh — Computer Vision Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=JetBrains+Mono:wght@300;400;500&family=Syne:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#050a12;
+  --bg2:#0a1220;
+  --bg3:#0f1a2e;
+  --cyan:#00d4ff;
+  --cyan2:#00a8cc;
+  --orange:#ff6b35;
+  --orange2:#cc5229;
+  --text:#e8f4f8;
+  --text2:#8baab8;
+  --text3:#4a6b7a;
+  --border:#1a3040;
+  --border2:#0f2030;
+  --glow:0 0 20px rgba(0,212,255,0.15);
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Syne',sans-serif;
+  font-size:16px;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+
+/* --- NOISE OVERLAY --- */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:0;
+  opacity:0.4;
+}
+
+/* --- NAV --- */
+nav{
+  position:fixed;top:0;left:0;right:0;
+  z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 4rem;
+  background:rgba(5,10,18,0.85);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  font-family:'Orbitron',sans-serif;
+  font-weight:800;font-size:1rem;letter-spacing:0.15em;
+  color:var(--cyan);
+  text-decoration:none;
+}
+.nav-logo span{color:var(--orange)}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{
+  color:var(--text2);font-size:0.78rem;letter-spacing:0.12em;
+  text-transform:uppercase;text-decoration:none;
+  font-family:'JetBrains Mono',monospace;
+  transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--cyan)}
+.nav-cta{
+  background:transparent;border:1px solid var(--cyan);
+  color:var(--cyan);padding:0.45rem 1.2rem;
+  font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:0.1em;
+  cursor:pointer;text-decoration:none;
+  transition:background 0.2s,color 0.2s;
+}
+.nav-cta:hover{background:var(--cyan);color:var(--bg)}
+
+/* --- HERO --- */
+#hero{
+  min-height:100vh;
+  display:flex;align-items:center;
+  padding:6rem 4rem 4rem;
+  position:relative;
+  overflow:hidden;
+}
+.hero-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:4rem;align-items:center;
+  max-width:1200px;margin:0 auto;width:100%;
+  position:relative;z-index:1;
+}
+.hero-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.72rem;letter-spacing:0.2em;color:var(--cyan);
+  text-transform:uppercase;margin-bottom:1.2rem;
+  display:flex;align-items:center;gap:0.8rem;
+}
+.hero-tag::before{
+  content:'';display:block;width:2rem;height:1px;background:var(--cyan);
+}
+h1.hero-name{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(2.4rem,5vw,4rem);
+  font-weight:800;line-height:1.05;
+  letter-spacing:-0.02em;
+  margin-bottom:0.5rem;
+}
+h1.hero-name span{color:var(--cyan)}
+.hero-title{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(0.9rem,2vw,1.1rem);
+  font-weight:400;color:var(--orange);
+  letter-spacing:0.15em;margin-bottom:2rem;
+}
+.hero-desc{
+  color:var(--text2);font-size:1rem;line-height:1.8;
+  max-width:480px;margin-bottom:2.5rem;
+}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap}
+.btn-primary{
+  background:var(--cyan);color:var(--bg);
+  padding:0.8rem 2rem;
+  font-family:'JetBrains Mono',monospace;font-size:0.8rem;letter-spacing:0.1em;
+  text-decoration:none;border:none;cursor:pointer;
+  font-weight:500;
+  transition:background 0.2s,transform 0.15s;
+  display:inline-block;
+}
+.btn-primary:hover{background:var(--cyan2);transform:translateY(-2px)}
+.btn-outline{
+  background:transparent;color:var(--text);
+  padding:0.8rem 2rem;
+  font-family:'JetBrains Mono',monospace;font-size:0.8rem;letter-spacing:0.1em;
+  text-decoration:none;border:1px solid var(--border);cursor:pointer;
+  transition:border-color 0.2s,color 0.2s;
+  display:inline-block;
+}
+.btn-outline:hover{border-color:var(--cyan);color:var(--cyan)}
+.hero-stats{
+  display:flex;gap:2.5rem;margin-top:2.5rem;
+}
+.stat{display:flex;flex-direction:column}
+.stat-num{
+  font-family:'Orbitron',sans-serif;font-size:1.8rem;font-weight:800;
+  color:var(--cyan);line-height:1;
+}
+.stat-label{
+  font-family:'JetBrains Mono',monospace;font-size:0.7rem;
+  letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;
+  margin-top:0.3rem;
+}
+
+/* HERO VISUAL */
+.hero-visual{position:relative;display:flex;align-items:center;justify-content:center}
+.thermal-frame{
+  width:380px;height:420px;
+  border:1px solid var(--border);
+  position:relative;overflow:hidden;
+  background:var(--bg2);
+}
+.thermal-frame::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 60% 60% at 50% 45%, rgba(0,212,255,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 70% 60%, rgba(255,107,53,0.06) 0%, transparent 60%);
+}
+.scan-line{
+  position:absolute;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  opacity:0.6;
+  animation:scan 3s linear infinite;
+}
+@keyframes scan{0%{top:0}100%{top:100%}}
+.tf-corner{position:absolute;width:20px;height:20px;border-color:var(--cyan);border-style:solid}
+.tf-tl{top:12px;left:12px;border-width:2px 0 0 2px}
+.tf-tr{top:12px;right:12px;border-width:2px 2px 0 0}
+.tf-bl{bottom:12px;left:12px;border-width:0 0 2px 2px}
+.tf-br{bottom:12px;right:12px;border-width:0 2px 2px 0}
+.thermal-content{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0.8rem;
+}
+.avatar-ring{
+  width:140px;height:140px;
+  border:2px solid rgba(0,212,255,0.3);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+  animation:pulse-ring 3s ease-in-out infinite;
+}
+@keyframes pulse-ring{
+  0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,0.2)}
+  50%{box-shadow:0 0 0 16px rgba(0,212,255,0)}
+}
+.avatar-inner{
+  width:110px;height:110px;
+  background:linear-gradient(135deg,#0a2030,#0f3050);
+  border-radius:50%;
+  border:2px solid rgba(0,212,255,0.4);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',sans-serif;font-size:2.5rem;font-weight:800;
+  color:var(--cyan);
+}
+.tf-labels{
+  display:flex;flex-direction:column;align-items:center;gap:0.4rem;
+  margin-top:0.5rem;
+}
+.tf-label{
+  font-family:'JetBrains Mono',monospace;font-size:0.65rem;
+  letter-spacing:0.15em;color:var(--text3);text-transform:uppercase;
+}
+.tf-label span{color:var(--cyan)}
+.tf-badge{
+  display:inline-flex;align-items:center;gap:0.4rem;
+  border:1px solid rgba(0,212,255,0.3);
+  padding:0.3rem 0.8rem;
+  font-family:'JetBrains Mono',monospace;font-size:0.65rem;
+  letter-spacing:0.1em;color:var(--cyan2);margin-top:0.5rem;
+}
+.tf-badge::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--cyan);animation:blink 1.5s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.tf-tags{
+  display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;
+  padding:0 1.5rem;
+}
+.tf-tag{
+  font-family:'JetBrains Mono',monospace;font-size:0.6rem;
+  letter-spacing:0.08em;color:var(--text3);
+  border:1px solid var(--border2);padding:0.2rem 0.6rem;
+}
+
+/* hero background decorations */
+.hero-bg-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--border2) 1px,transparent 1px),
+    linear-gradient(90deg,var(--border2) 1px,transparent 1px);
+  background-size:60px 60px;
+  opacity:0.4;
+}
+.hero-bg-glow{
+  position:absolute;top:-20%;right:5%;
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(0,212,255,0.05) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+/* --- SECTION COMMON --- */
+section{padding:6rem 4rem;position:relative;z-index:1}
+.section-inner{max-width:1200px;margin:0 auto}
+.section-tag{
+  font-family:'JetBrains Mono',monospace;font-size:0.7rem;
+  letter-spacing:0.2em;color:var(--cyan);text-transform:uppercase;
+  display:flex;align-items:center;gap:0.8rem;margin-bottom:0.8rem;
+}
+.section-tag::before{content:'';display:block;width:2rem;height:1px;background:var(--cyan)}
+h2.section-title{
+  font-family:'Orbitron',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);
+  font-weight:800;letter-spacing:-0.01em;margin-bottom:3rem;
+}
+h2.section-title span{color:var(--cyan)}
+.divider{
+  height:1px;background:linear-gradient(90deg,var(--cyan),transparent);
+  margin-bottom:4rem;opacity:0.3;
+}
+
+/* --- ABOUT --- */
+#about{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.about-text{color:var(--text2);line-height:1.9;font-size:1rem}
+.about-text p{margin-bottom:1.2rem}
+.about-text strong{color:var(--text);font-weight:500}
+.highlight-box{
+  background:var(--bg3);border:1px solid var(--border);
+  border-left:3px solid var(--cyan);
+  padding:1.5rem;margin-top:1.5rem;
+}
+.highlight-box p{
+  font-family:'JetBrains Mono',monospace;font-size:0.85rem;
+  color:var(--text2);line-height:1.7;margin:0;
+}
+.highlight-box .hl-title{
+  font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--cyan);margin-bottom:0.6rem;
+}
+.edu-card{
+  background:var(--bg);border:1px solid var(--border);
+  padding:1.5rem;display:flex;flex-direction:column;gap:0.3rem;
+}
+.edu-degree{font-weight:600;color:var(--text);font-size:1rem}
+.edu-uni{color:var(--text2);font-size:0.9rem}
+.edu-year{
+  font-family:'JetBrains Mono',monospace;font-size:0.7rem;
+  color:var(--cyan);letter-spacing:0.1em;
+}
+.edu-detail{color:var(--text3);font-size:0.85rem;margin-top:0.3rem}
+.about-right{display:flex;flex-direction:column;gap:1.5rem}
+.skills-cloud{
+  background:var(--bg);border:1px solid var(--border);
+  padding:1.5rem;
+}
+.skills-cloud-title{
+  font-family:'JetBrains Mono',monospace;font-size:0.65rem;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);
+  margin-bottom:1rem;
+}
+.skill-chips{display:flex;flex-wrap:wrap;gap:0.5rem}
+.chip{
+  font-family:'JetBrains Mono',monospace;font-size:0.72rem;
+  letter-spacing:0.05em;padding:0.35rem 0.8rem;
+  border:1px solid var(--border);color:var(--text2);
+  background:var(--bg2);
+  transition:border-color 0.2s,color 0.2s;cursor:default;
+}
+.chip:hover{border-color:var(--cyan);color:var(--cyan)}
+.chip.orange{border-color:rgba(255,107,53,0.4);color:var(--orange)}
+
+/* --- EXPERIENCE --- */
+#experience{background:var(--bg)}
+.timeline{position:relative;padding-left:2rem}
+.timeline::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:1px;background:linear-gradient(180deg,var(--cyan),var(--border),transparent);
+}
+.tl-item{position:relative;padding-bottom:3.5rem}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{
+  position:absolute;left:-2.4rem;top:0.2rem;
+  width:12px;height:12px;
+  border:2px solid var(--cyan);background:var(--bg);
+  transform:rotate(45deg);
+}
+.tl-dot.active{background:var(--cyan)}
+.tl-meta{
+  font-family:'JetBrains Mono',monospace;font-size:0.7rem;
+  letter-spacing:0.1em;color:var(--cyan);text-transform:uppercase;
+  margin-bottom:0.4rem;
+}
+.tl-company{
+  font-family:'Orbitron',sans-serif;font-size:1.1rem;
+  font-weight:600;color:var(--text);margin-bottom:0.2rem;
+}
+.tl-role{color:var(--orange);font-size:0.9rem;font-weight:500;margin-bottom:0.8rem}
+.tl-desc{color:var(--text2);font-size:0.95rem;line-height:1.8}
+.tl-tags{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.8rem}
+.tl-tag{
+  font-family:'JetBrains Mono',monospace;font-size:0.65rem;
+  color:var(--text3);border:1px solid var(--border2);padding:0.2rem 0.6rem;
+}
+
+/* --- PROJECTS --- */
+#projects{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.projects-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:1.5rem;
+}
+.project-card{
+  background:var(--bg);border:1px solid var(--border);
+  padding:2rem;
+  position:relative;overflow:hidden;
+  transition:border-color 0.3s,transform 0.2s;cursor:default;
+}
+.project-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--cyan),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.project-card:hover{border-color:rgba(0,212,255,0.4);transform:translateY(-4px)}
+.project-card:hover::before{opacity:1}
+.project-card.featured{border-color:rgba(0,212,255,0.3)}
+.project-card.featured::before{opacity:0.6}
+.pc-num{
+  font-family:'Orbitron',sans-serif;font-size:0.65rem;
+  color:var(--text3);letter-spacing:0.2em;margin-bottom:1rem;
+}
+.pc-title{
+  font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:600;
+  color:var(--text);margin-bottom:0.6rem;line-height:1.3;
+}
+.pc-desc{color:var(--text2);font-size:0.9rem;line-height:1.75;margin-bottom:1.2rem}
+.pc-tags{display:flex;flex-wrap:wrap;gap:0.4rem}
+.pc-tag{
+  font-family:'JetBrains Mono',monospace;font-size:0.62rem;
+  color:var(--cyan2);border:1px solid rgba(0,212,255,0.2);padding:0.2rem 0.5rem;
+}
+.pc-link{
+  display:inline-flex;align-items:center;gap:0.4rem;
+  font-family:'JetBrains Mono',monospace;font-size:0.72rem;
+  color:var(--cyan);text-decoration:none;margin-top:1rem;
+  transition:gap 0.2s;
+}
+.pc-link:hover{gap:0.7rem}
+.pc-link::after{content:'→'}
+
+/* --- PUBLICATION --- */
+#publication{background:var(--bg)}
+.pub-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-left:3px solid var(--orange);
+  padding:2.5rem;display:grid;grid-template-columns:1fr auto;gap:2rem;
+  align-items:start;
+}
+.pub-badge{
+  font-family:'JetBrains Mono',monospace;font-size:0.65rem;
+  letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--orange);border:1px solid var(--orange2);
+  padding:0.25rem 0.7rem;margin-bottom:1rem;display:inline-block;
+}
+.pub-title{
+  font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:600;
+  color:var(--text);line-height:1.5;margin-bottom:0.6rem;
+}
+.pub-journal{
+  font-family:'JetBrains Mono',monospace;font-size:0.8rem;
+  color:var(--orange);margin-bottom:0.8rem;
+}
+.pub-abstract{color:var(--text2);font-size:0.9rem;line-height:1.8}
+.pub-side{display:flex;flex-direction:column;align-items:flex-end;gap:1rem}
+.pub-year{
+  font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:800;
+  color:var(--border);
+}
+.pub-stat{
+  background:var(--bg3);border:1px solid var(--border);
+  padding:0.8rem 1.2rem;text-align:center;
+}
+.ps-num{
+  font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:800;
+  color:var(--orange);
+}
+.ps-label{
+  font-family:'JetBrains Mono',monospace;font-size:0.62rem;
+  letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;
+  margin-top:0.2rem;
+}
+
+/* --- CONTACT --- */
+#contact{
+  background:var(--bg2);border-top:1px solid var(--border);
+  text-align:center;
+}
+.contact-inner{max-width:640px;margin:0 auto}
+.contact-intro{
+  color:var(--text2);font-size:1rem;line-height:1.8;margin-bottom:3rem;
+}
+.contact-links{
+  display:flex;justify-content:center;flex-wrap:wrap;gap:1rem;margin-bottom:3rem;
+}
+.contact-link{
+  display:inline-flex;align-items:center;gap:0.6rem;
+  background:var(--bg3);border:1px solid var(--border);
+  padding:0.75rem 1.5rem;
+  font-family:'JetBrains Mono',monospace;font-size:0.78rem;letter-spacing:0.08em;
+  color:var(--text2);text-decoration:none;
+  transition:border-color 0.2s,color 0.2s;
+}
+.contact-link:hover{border-color:var(--cyan);color:var(--cyan)}
+.contact-link.primary{
+  border-color:var(--cyan);color:var(--cyan);
+  background:rgba(0,212,255,0.05);
+}
+.contact-email{
+  font-family:'JetBrains Mono',monospace;font-size:1.1rem;
+  color:var(--cyan);margin-bottom:2rem;display:block;
+  text-decoration:none;
+}
+.contact-email:hover{text-decoration:underline}
+
+/* --- FOOTER --- */
+footer{
+  background:var(--bg);border-top:1px solid var(--border);
+  padding:2rem 4rem;
+  display:flex;align-items:center;justify-content:space-between;
+  position:relative;z-index:1;
+}
+.footer-copy{
+  font-family:'JetBrains Mono',monospace;font-size:0.7rem;
+  letter-spacing:0.1em;color:var(--text3);
+}
+.footer-logo{
+  font-family:'Orbitron',sans-serif;font-size:0.8rem;
+  font-weight:800;color:var(--text3);letter-spacing:0.15em;
+}
+.footer-logo span{color:var(--cyan)}
+
+/* --- SKILLS BARS --- */
+.skill-bars{background:var(--bg);border:1px solid var(--border);padding:1.5rem}
+.sb-title{
+  font-family:'JetBrains Mono',monospace;font-size:0.65rem;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);
+  margin-bottom:1rem;
+}
+.sb-item{margin-bottom:0.9rem}
+.sb-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  margin-bottom:0.3rem;
+}
+.sb-name{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text2)}
+.sb-pct{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--cyan)}
+.sb-track{height:3px;background:var(--border);position:relative}
+.sb-fill{
+  height:100%;background:linear-gradient(90deg,var(--cyan),var(--cyan2));
+  transition:width 1.5s cubic-bezier(0.4,0,0.2,1);
+}
+.sb-fill.orange{background:linear-gradient(90deg,var(--orange),var(--orange2))}
+
+/* animate bars on scroll */
+.sb-fill[data-width]{width:0}
+.sb-fill.animated{width:var(--target-width)!important}
+
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem}
+  .nav-links{display:none}
+  #hero{padding:5rem 1.5rem 3rem}
+  .hero-grid{grid-template-columns:1fr;gap:2rem}
+  .thermal-frame{width:100%;max-width:320px;height:320px;margin:0 auto}
+  section{padding:4rem 1.5rem}
+  .about-grid{grid-template-columns:1fr}
+  .pub-card{grid-template-columns:1fr}
+  .pub-side{align-items:flex-start;flex-direction:row}
+  footer{flex-direction:column;gap:1rem;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">Y<span>.</span>SINGH</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#publication">Research</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="mailto:yuvrajsingh@email.com" class="nav-cta">Hire Me</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-bg-glow"></div>
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div class="hero-tag">Computer Vision Engineer</div>
+      <h1 class="hero-name">Yuvraj<br><span>Singh</span></h1>
+      <div class="hero-title">AI · Deep Learning · CV Systems</div>
+      <p class="hero-desc">
+        Building intelligent perception systems — from infrared small-target detection on NVIDIA H100s to production-grade CV pipelines. Research-backed, deployment-ready.
+      </p>
+      <div class="hero-btns">
+        <a href="#projects" class="btn-primary">View Projects</a>
+        <a href="#contact" class="btn-outline">Get In Touch</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">1</span>
+          <span class="stat-label">Springer Paper</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">3+</span>
+          <span class="stat-label">Industry Roles</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">H100</span>
+          <span class="stat-label">GPU Experience</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="thermal-frame">
+        <div class="scan-line"></div>
+        <div class="tf-corner tf-tl"></div>
+        <div class="tf-corner tf-tr"></div>
+        <div class="tf-corner tf-bl"></div>
+        <div class="tf-corner tf-br"></div>
+        <div class="thermal-content">
+          <div class="avatar-ring">
+            <div class="avatar-inner">YS</div>
+          </div>
+          <div class="tf-labels">
+            <div class="tf-label">SUBJECT: <span>YUVRAJ SINGH</span></div>
+            <div class="tf-label">MODE: <span>CV ENGINEER</span></div>
+          </div>
+          <div class="tf-badge">AVAILABLE FOR ROLES</div>
+          <div class="tf-tags">
+            <span class="tf-tag">PyTorch</span>
+            <span class="tf-tag">OpenCV</span>
+            <span class="tf-tag">YOLO</span>
+            <span class="tf-tag">FastAPI</span>
+            <span class="tf-tag">Docker</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="section-tag">Who I Am</div>
+    <h2 class="section-title">About <span>Me</span></h2>
+    <div class="about-grid">
+      <div>
+        <div class="about-text">
+          <p>I'm a <strong>Computer Vision & AI/ML Engineer</strong> with a B.Tech in Electronics & Communication Engineering (2024). My work lives at the intersection of research and production — I've trained models on NVIDIA H100 GPUs at DRDO and deployed FastAPI-backed CV services in industry.</p>
+          <p>At <strong>DRDO</strong>, I worked on infrared small target detection using MPANet and custom YOLO variants, training with PyTorch DDP across multi-GPU clusters. At <strong>DeltaX AI</strong>, I built an industrial crack detection system using EfficientNet-B3, overcoming real-world domain-gap challenges.</p>
+          <p>I care about the full stack — from model architecture choices to serving latency. I'm currently open to <strong>Computer Vision Engineer</strong> and <strong>AI/ML Engineer</strong> roles across India.</p>
+        </div>
+        <div class="highlight-box">
+          <div class="hl-title">Research Publication</div>
+          <p>Published in <strong>Springer</strong> on infrared small target detection — combining signal processing intuitions with modern deep learning for challenging low-SNR detection scenarios.</p>
+        </div>
+      </div>
+      <div class="about-right">
+        <div class="edu-card">
+          <div class="edu-year">2020 – 2024</div>
+          <div class="edu-degree">B.Tech — Electronics & Communication Engineering</div>
+          <div class="edu-uni">Dr. Ram Manohar Lohia Avadh University, Varanasi</div>
+          <div class="edu-detail">Varanasi, Uttar Pradesh, India</div>
+        </div>
+        <div class="skill-bars">
+          <div class="sb-title">Core Technical Proficiency</div>
+          <div class="sb-item">
+            <div class="sb-row"><span class="sb-name">Python / PyTorch</span><span class="sb-pct">95%</span></div>
+            <div class="sb-track"><div class="sb-fill" data-width="95" style="--target-width:95%"></div></div>
+          </div>
+          <div class="sb-item">
+            <div class="sb-row"><span class="sb-name">Computer Vision (OpenCV/YOLO)</span><span class="sb-pct">90%</span></div>
+            <div class="sb-track"><div class="sb-fill" data-width="90" style="--target-width:90%"></div></div>
+          </div>
+          <div class="sb-item">
+            <div class="sb-row"><span class="sb-name">Deep Learning & Model Training</span><span class="sb-pct">88%</span></div>
+            <div class="sb-track"><div class="sb-fill" data-width="88" style="--target-width:88%"></div></div>
+          </div>
+          <div class="sb-item">
+            <div class="sb-row"><span class="sb-name">FastAPI / Docker / AWS</span><span class="sb-pct">80%</span></div>
+            <div class="sb-track"><div class="sb-fill orange" data-width="80" style="--target-width:80%"></div></div>
+          </div>
+          <div class="sb-item">
+            <div class="sb-row"><span class="sb-name">LLMs / RAG / Prompt Engineering</span><span class="sb-pct">75%</span></div>
+            <div class="sb-track"><div class="sb-fill orange" data-width="75" style="--target-width:75%"></div></div>
+          </div>
+        </div>
+        <div class="skills-cloud">
+          <div class="skills-cloud-title">Technologies & Tools</div>
+          <div class="skill-chips">
+            <span class="chip">PyTorch</span><span class="chip">OpenCV</span><span class="chip">YOLOv8</span>
+            <span class="chip">EfficientNet</span><span class="chip">MPANet</span><span class="chip">ResNet</span>
+            <span class="chip">FastAPI</span><span class="chip">Docker</span><span class="chip">AWS</span>
+            <span class="chip orange">Python</span><span class="chip orange">NumPy</span><span class="chip orange">Pandas</span>
+            <span class="chip">TF-IDF</span><span class="chip">GPT-4o</span><span class="chip">RAG</span>
+            <span class="chip">SQL</span><span class="chip">Git</span><span class="chip">Kaggle</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-inner">
+    <div class="section-tag">Work History</div>
+    <h2 class="section-title">Experience <span>&amp; Roles</span></h2>
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-dot active"></div>
+        <div class="tl-meta">2023 – 2024</div>
+        <div class="tl-company">DRDO — Defence Research &amp; Development Organisation</div>
+        <div class="tl-role">Computer Vision Research Engineer</div>
+        <div class="tl-desc">
+          Led development of infrared small target detection systems under challenging low-SNR battlefield conditions. Implemented MPANet architecture and custom YOLO variants, training with PyTorch Distributed Data Parallel (DDP) across NVIDIA H100 GPUs. Published findings as a Springer research paper. Focused on detection precision in cluttered infrared backgrounds — a core problem in defence surveillance.
+        </div>
+        <div class="tl-tags">
+          <span class="tl-tag">MPANet</span><span class="tl-tag">YOLOv5/v8</span><span class="tl-tag">PyTorch DDP</span>
+          <span class="tl-tag">NVIDIA H100</span><span class="tl-tag">Infrared CV</span><span class="tl-tag">Research</span>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot active"></div>
+        <div class="tl-meta">2023</div>
+        <div class="tl-company">DeltaX AI India</div>
+        <div class="tl-role">Computer Vision Engineer</div>
+        <div class="tl-desc">
+          Built an industrial crack detection pipeline from scratch. Selected and fine-tuned EfficientNet-B3 for classifying surface cracks in manufacturing images. Addressed real-world domain gap between public benchmark datasets and industrial imagery using targeted data strategies. Deployed the model as a REST API service.
+        </div>
+        <div class="tl-tags">
+          <span class="tl-tag">EfficientNet-B3</span><span class="tl-tag">Transfer Learning</span>
+          <span class="tl-tag">PyTorch</span><span class="tl-tag">Domain Adaptation</span><span class="tl-tag">FastAPI</span>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-meta">2022</div>
+        <div class="tl-company">Inevitable Infotech</div>
+        <div class="tl-role">Data Analytics Intern</div>
+        <div class="tl-desc">
+          Performed exploratory data analysis and built reporting dashboards for business intelligence use cases. Worked with pandas, NumPy, and SQL to extract, clean, and visualize operational data for decision-making.
+        </div>
+        <div class="tl-tags">
+          <span class="tl-tag">Python</span><span class="tl-tag">Pandas</span>
+          <span class="tl-tag">SQL</span><span class="tl-tag">Data Visualization</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-inner">
+    <div class="section-tag">Selected Work</div>
+    <h2 class="section-title">Featured <span>Projects</span></h2>
+    <div class="projects-grid">
+
+      <div class="project-card featured">
+        <div class="pc-num">01 / FEATURED</div>
+        <div class="pc-title">AI-Powered LinkedIn Job Application Automator</div>
+        <div class="pc-desc">Chrome Extension (Manifest V3) + FastAPI backend that automates job applications on LinkedIn. Uses TF-IDF for job relevance scoring and GPT-4o-mini for generating intelligent screening answers. Full-stack ML system from browser to backend.</div>
+        <div class="pc-tags">
+          <span class="pc-tag">Chrome Extension</span><span class="pc-tag">FastAPI</span>
+          <span class="pc-tag">TF-IDF</span><span class="pc-tag">GPT-4o-mini</span><span class="pc-tag">Manifest V3</span>
+        </div>
+        <a href="https://github.com/yuvrajsingh" class="pc-link">View on GitHub</a>
+      </div>
+
+      <div class="project-card">
+        <div class="pc-num">02</div>
+        <div class="pc-title">Infrared Small Target Detection System</div>
+        <div class="pc-desc">Defence-grade detection pipeline for identifying small, low-radiance targets in cluttered infrared imagery. Benchmarked MPANet vs. YOLO variants on real IR sensor data. Trained on NVIDIA H100 GPUs using PyTorch DDP. Published in Springer.</div>
+        <div class="pc-tags">
+          <span class="pc-tag">MPANet</span><span class="pc-tag">YOLO</span>
+          <span class="pc-tag">PyTorch DDP</span><span class="pc-tag">NVIDIA H100</span><span class="pc-tag">Infrared</span>
+        </div>
+        <a href="https://github.com/yuvrajsingh" class="pc-link">View Research</a>
+      </div>
+
+      <div class="project-card">
+        <div class="pc-num">03</div>
+        <div class="pc-title">Industrial Crack Detection Pipeline</div>
+        <div class="pc-desc">End-to-end surface defect detection for manufacturing quality control. Fine-tuned EfficientNet-B3 with domain-aware training strategies to bridge the gap between open-source benchmark data and real industrial imagery.</div>
+        <div class="pc-tags">
+          <span class="pc-tag">EfficientNet-B3</span><span class="pc-tag">PyTorch</span>
+          <span class="pc-tag">Transfer Learning</span><span class="pc-tag">FastAPI</span>
+        </div>
+        <a href="https://github.com/yuvrajsingh" class="pc-link">View on GitHub</a>
+      </div>
+
+      <div class="project-card">
+        <div class="pc-num">04</div>
+        <div class="pc-title">LLM Output Parser with Retry Logic</div>
+        <div class="pc-desc">Robust Python utility for parsing structured outputs from LLMs with automatic retry logic, prompt injection detection, and graceful fallback handling. Built as part of a technical assessment for an AI engineering position.</div>
+        <div class="pc-tags">
+          <span class="pc-tag">Python</span><span class="pc-tag">LLMs</span>
+          <span class="pc-tag">Prompt Engineering</span><span class="pc-tag">Security</span>
+        </div>
+        <a href="https://github.com/yuvrajsingh" class="pc-link">View on GitHub</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PUBLICATION -->
+<section id="publication">
+  <div class="section-inner">
+    <div class="section-tag">Research</div>
+    <h2 class="section-title">Springer <span>Publication</span></h2>
+    <div class="pub-card">
+      <div>
+        <div class="pub-badge">Peer Reviewed · Springer</div>
+        <div class="pub-title">Infrared Small Target Detection Using Deep Learning: A Multi-Scale Attention Approach for Low-SNR Environments</div>
+        <div class="pub-journal">Springer — Journal / Conference Proceedings · 2024</div>
+        <div class="pub-abstract">
+          This paper addresses the challenge of detecting small, dim infrared targets embedded in complex clutter backgrounds — a critical problem in defence surveillance and early-warning systems. We evaluate multi-scale attention-based architectures (MPANet) against optimised YOLO variants, demonstrating superior detection rates under low signal-to-noise ratio conditions. The work bridges classical signal processing techniques with modern deep learning on real sensor data, contributing methods applicable to both defence and civilian remote sensing domains.
+        </div>
+      </div>
+      <div class="pub-side">
+        <div class="pub-year">2024</div>
+        <div class="pub-stat">
+          <div class="ps-num">Springer</div>
+          <div class="ps-label">Publisher</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="contact-inner">
+      <div class="section-tag" style="justify-content:center;margin-bottom:1.5rem">Get In Touch</div>
+      <h2 class="section-title">Open to <span>Opportunities</span></h2>
+      <p class="contact-intro">
+        I'm actively looking for Computer Vision Engineer and AI/ML Engineer roles across India. If you're building something interesting in perception, detection, or intelligent systems — let's talk.
+      </p>
+      <a href="mailto:yuvrajsingh@email.com" class="contact-email">yuvrajsingh@email.com</a>
+      <div class="contact-links">
+        <a href="https://linkedin.com/in/yuvrajsingh" class="contact-link primary" target="_blank">
+          ↗ LinkedIn
+        </a>
+        <a href="https://github.com/yuvrajsingh" class="contact-link" target="_blank">
+          ↗ GitHub
+        </a>
+        <a href="#" class="contact-link" target="_blank">
+          ↗ Resume (PDF)
+        </a>
+        <a href="https://link.springer.com" class="contact-link" target="_blank">
+          ↗ Springer Paper
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2024 Yuvraj Singh · All rights reserved</div>
+  <div class="footer-logo">Y<span>.</span>SINGH</div>
+</footer>
+
+<script>
+// Animate skill bars on scroll
+const fills = document.querySelectorAll('.sb-fill[data-width]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.classList.add('animated');
+      observer.unobserve(e.target);
+    }
+  });
+},{threshold:0.1});
+fills.forEach(f => observer.observe(f));
+
+// Nav active link on scroll
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',()=>{
+  let current = '';
+  sections.forEach(s => {
+    if(window.scrollY >= s.offsetTop - 200) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#'+current ? 'var(--cyan)' : '';
+  });
+});
+</script>
+</body>
+</html>
